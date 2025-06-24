@@ -19,7 +19,7 @@ document.addEventListener('DOMContentLoaded', () => {
         }
         // Clear the cookie and redirect
         document.cookie = 'access_token=; path=/; max-age=0; SameSite=Lax';
-        window.location.href = '/landing.html';
+        window.location.href = '/';
     }
 
     logoutBtn.addEventListener('click', (e) => {
