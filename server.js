@@ -29,12 +29,16 @@ const SYSTEM_PROMPT = `あなたは美容比較サイト（美容サロン・ク
 ## 出力形式
 返信文のみを出力してください。余計な説明は不要です。`;
 
-// Protected routes - require authentication
-app.get('/', requireAuth, (req, res) => {
+// App route - require authentication for the main product page
+app.get('/app', requireAuth, (req, res) => {
   res.sendFile('index.html', { root: 'public' });
 });
 
 // Public routes
+app.get('/', (req, res) => {
+  res.sendFile('landing.html', { root: 'public' });
+});
+
 app.get('/login', (req, res) => {
   res.sendFile('login.html', { root: 'public' });
 });
