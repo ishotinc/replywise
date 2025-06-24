@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beauty Review Reply Generator - 美容レビュー返信生成</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Beauty Review Reply Generator</h1>
+            <p class="subtitle">美容比較サイト専門 ネガティブレビュー返信生成システム</p>
+        </header>
+
+        <main>
+            <section class="input-section">
+                <h2>ネガティブレビュー入力</h2>
+                <textarea 
+                    id="reviewInput" 
+                    placeholder="ネガティブなレビューやクレームをここに入力してください..."
+                    rows="6"
+                ></textarea>
+                <button id="generateBtn" class="primary-btn">
+                    <span class="btn-text">返信を生成</span>
+                    <span class="loading-spinner" style="display: none;">
+                        <svg class="spinner" viewBox="0 0 50 50">
+                            <circle cx="25" cy="25" r="20" fill="none" stroke-width="5"></circle>
+                        </svg>
+                    </span>
+                </button>
+            </section>
+
+            <section class="output-section" id="outputSection" style="display: none;">
+                <h2>生成された返信</h2>
+                <div class="reply-container">
+                    <textarea id="replyOutput" readonly rows="6"></textarea>
+                    <div class="reply-footer">
+                        <span class="character-count" id="charCount">文字数: 0</span>
+                        <button id="copyBtn" class="secondary-btn">
+                            <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                                <path d="M8 3H12C13.1046 3 14 3.89543 14 5V7M8 3H4C2.89543 3 2 3.89543 2 5V13C2 14.1046 2.89543 15 4 15H8M8 3V1C8 0.447715 8.44772 0 9 0H11C11.5523 0 12 0.447715 12 1V3M16 7H12C10.8954 7 10 7.89543 10 9V17C10 18.1046 10.8954 19 12 19H16C17.1046 19 18 18.1046 18 17V9C18 7.89543 17.1046 7 16 7Z" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                            </svg>
+                            コピー
+                        </button>
+                    </div>
+                </div>
+            </section>
+
+            <div class="error-message" id="errorMessage" style="display: none;"></div>
+        </main>
+
+        <footer>
+            <p>&copy; 2024 Beauty Review Reply Generator</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/config.js"></script>
+    <script src="js/app.js"></script>
+</body>
+</html>

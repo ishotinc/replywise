@@ -93,7 +93,7 @@ authForm.addEventListener('submit', async (e) => {
             
             showSuccess('ログインしました。リダイレクトしています...');
             setTimeout(() => {
-                window.location.href = '/app';
+                window.location.href = '/app.html';
             }, 1000);
         }
         

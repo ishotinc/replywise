@@ -1,17 +1,10 @@
-require('dotenv').config();
-const express = require('express');
-const cors = require('cors');
-const cookieParser = require('cookie-parser');
 const Anthropic = require('@anthropic-ai/sdk');
-const { requireAuth } = require('./middleware/auth');
+const { createClient } = require('@supabase/supabase-js');
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+// Initialize Supabase client
+const supabase = createClient(process.env.SUPABASE_URL, process.env.SUPABASE_SERVICE_KEY);
 
-app.use(cors());
-app.use(express.json());
-app.use(cookieParser());
-
+// Initialize Anthropic client
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
@@ -28,28 +21,29 @@ const SYSTEM_PROMPT = `あなたは美容比較サイト（美容サロン・ク
 ## 出力形式
 返信文のみを出力してください。余計な説明は不要です。`;
 
-// App route - require authentication for the main product page
-app.get('/app', requireAuth, (req, res) => {
-  res.sendFile('index.html', { root: 'public' });
-});
+export default async function handler(req, res) {
+  // 1. Check for POST request
+  if (req.method !== 'POST') {
+    return res.status(405).json({ error: 'Method Not Allowed' });
+  }
 
-// Public routes
-app.get('/', (req, res) => {
-  res.sendFile('landing.html', { root: 'public' });
-});
+  // 2. Authentication
+  try {
+    const token = req.cookies.access_token;
+    if (!token) {
+      return res.status(401).json({ error: 'Not authenticated' });
+    }
+    const { data: { user }, error } = await supabase.auth.getUser(token);
+    if (error || !user) {
+      return res.status(401).json({ error: 'Invalid token' });
+    }
+  } catch (error) {
+    return res.status(500).json({ error: 'Authentication error' });
+  }
 
-app.get('/login', (req, res) => {
-  res.sendFile('login.html', { root: 'public' });
-});
-
-app.get('/landing', (req, res) => {
-  res.sendFile('landing.html', { root: 'public' });
-});
-
-app.post('/api/generate-reply', requireAuth, async (req, res) => {
+  // 3. API Logic
   try {
     const { review } = req.body;
-
     if (!review) {
       return res.status(400).json({ error: 'レビューが入力されていません' });
     }
@@ -69,20 +63,12 @@ app.post('/api/generate-reply', requireAuth, async (req, res) => {
     const replyText = response.content[0].text.trim();
     const characterCount = replyText.length;
 
-    res.json({
+    res.status(200).json({
       reply: replyText,
       characterCount: characterCount
     });
-
   } catch (error) {
     console.error('Error:', error);
     res.status(500).json({ error: '返信の生成中にエラーが発生しました' });
   }
-});
-
-// Serve static files AFTER all other routes
-app.use(express.static('public'));
-
-app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
-});
+} 
