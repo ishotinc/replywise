@@ -11,7 +11,6 @@ const PORT = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
-app.use(express.static('public'));
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -80,6 +79,9 @@ app.post('/api/generate-reply', requireAuth, async (req, res) => {
     res.status(500).json({ error: '返信の生成中にエラーが発生しました' });
   }
 });
+
+// Serve static files AFTER all other routes
+app.use(express.static('public'));
 
 app.listen(PORT, () => {
   console.log(`Server is running on http://localhost:${PORT}`);
